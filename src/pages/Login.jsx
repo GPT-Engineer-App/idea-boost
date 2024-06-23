@@ -3,12 +3,21 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSupabaseAuth } from "@/integrations/supabase/auth.jsx";
+import { toast } from "sonner";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const { session, loading, login } = useSupabaseAuth();
+
+  const onSubmit = async (data) => {
+    try {
+      await login(data.email, data.password);
+      toast.success("Logged in successfully!");
+    } catch (error) {
+      toast.error("Failed to log in: " + error.message);
+    }
   };
 
   return (

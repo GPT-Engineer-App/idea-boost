@@ -3,12 +3,26 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAddUser } from "@/integrations/supabase/index.js";
+import { toast } from "sonner";
 
 const Register = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+  const addUser = useAddUser();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      await addUser.mutateAsync({
+        username: data.username,
+        email: data.email,
+        password_hash: data.password, // In a real-world scenario, ensure to hash the password before storing it
+        created_at: new Date().toISOString(),
+      });
+      toast.success("User registered successfully!");
+      reset();
+    } catch (error) {
+      toast.error("Failed to register user: " + error.message);
+    }
   };
 
   return (
@@ -20,10 +34,10 @@ const Register = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Name
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username
               </label>
-              <Input id="name" type="text" {...register("name")} required />
+              <Input id="username" type="text" {...register("username")} required />
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">

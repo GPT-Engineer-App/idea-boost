@@ -42,6 +42,15 @@ export const SupabaseAuthProviderInner = ({ children }) => {
     };
   }, [queryClient]);
 
+  const login = async (email, password) => {
+    setLoading(true);
+    const { error, session } = await supabase.auth.signIn({ email, password });
+    if (error) throw new Error(error.message);
+    setSession(session);
+    queryClient.invalidateQueries('user');
+    setLoading(false);
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setSession(null);
@@ -50,7 +59,7 @@ export const SupabaseAuthProviderInner = ({ children }) => {
   };
 
   return (
-    <SupabaseAuthContext.Provider value={{ session, loading, logout }}>
+    <SupabaseAuthContext.Provider value={{ session, loading, login, logout }}>
       {children}
     </SupabaseAuthContext.Provider>
   );
