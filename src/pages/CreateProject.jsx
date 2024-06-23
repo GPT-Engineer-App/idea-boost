@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase, useAddFile, useTags, useAddTag } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase, useAddFile, useTags, useAddTag } from "@/integrations/supabase/index.js";
 
 const CreateProject = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -31,7 +31,7 @@ const CreateProject = () => {
       if (userScore) {
         await updateUserScore.mutateAsync({
           user_id: userId,
-          score: userScore.score + 10, // Increment score by 10 for creating a project
+          score: userScore.score + 10, // Increase score by 10 for creating a project
         });
       } else {
         await addUserScore.mutateAsync({
@@ -72,12 +72,12 @@ const CreateProject = () => {
       toast.success("Project created successfully!");
       reset();
     } catch (error) {
-      toast.error("Failed to create project: " + error.message);
+      toast.error("Error creating project: " + error.message);
     }
   };
 
-  if (tagsLoading) return <div>Loading...</div>;
-  if (tagsError) return <div>Error loading tags</div>;
+  if (tagsLoading) return <div>Loading tags...</div>;
+  if (tagsError) return <div>Failed to load tags</div>;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

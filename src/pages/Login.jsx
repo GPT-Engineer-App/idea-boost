@@ -20,6 +20,7 @@ const Login = () => {
     }
   }, [session, navigate]);
 
+  // Function to handle form submission
   const onSubmit = async (data) => {
     try {
       await login(data.email, data.password);
