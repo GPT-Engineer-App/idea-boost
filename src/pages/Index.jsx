@@ -21,16 +21,6 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Urban Green Roof Initiative</CardTitle>
-              <CardDescription>Greening Urban Skies</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img src="/images/project1.jpg" alt="Urban Green Roof Initiative" className="w-full h-48 object-cover rounded-md" />
-              <Button className="mt-4" variant="outline">Read More</Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
               <CardTitle>Community Plastic Recycling Workshop</CardTitle>
               <CardDescription>Recycle, Rebuild, Reimagine</CardDescription>
             </CardHeader>
@@ -51,6 +41,92 @@ const Index = () => {
           </Card>
         </div>
         <Button className="mt-6" variant="secondary">See More Projects</Button>
+      </section>
+
+      <section className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold mb-6">Urban Green Roof Initiative</h2>
+        <div className="grid grid-cols-1 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Urban Green Roof Initiative</CardTitle>
+              <CardDescription>The 'Urban Green Roof Initiative' aims to transform urban landscapes by integrating green spaces into the very fabric of city life. By creating sustainable, eco-friendly rooftops, this initiative seeks to reduce urban heat, enhance biodiversity, and improve air quality, contributing to the well-being of both the environment and city residents.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <img src="/images/urban_green_roof.jpg" alt="Urban Green Roof Initiative" className="w-full h-48 object-cover rounded-md" />
+              <p className="mt-4">Urban areas face unique environmental challenges, including heat islands, air pollution, and lack of green spaces. The 'Urban Green Roof Initiative' addresses these issues head-on by converting urban rooftops into vibrant green spaces. These green roofs not only provide aesthetic value but also offer practical benefits such as temperature regulation, carbon sequestration, and habitat creation for urban wildlife. Through this project, we envision cities where nature and urban living coexist in harmony.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold mb-6">Project Details</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Project Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Team and Leadership</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Approaches and Methodologies</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Value Proposition</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Timeline and Milestones</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Resource Allocation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Community Engagement and Participation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Monitoring and Evaluation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button className="mt-4" variant="outline">Vote Here</Button>
+            </CardContent>
+          </Card>
+        </div>
       </section>
 
       <section className="container mx-auto px-4">
