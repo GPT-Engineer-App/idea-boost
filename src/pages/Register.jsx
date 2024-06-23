@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddUser } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const { register, handleSubmit, reset } = useForm();
   const addUser = useAddUser();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
@@ -20,6 +22,7 @@ const Register = () => {
       });
       toast.success("User registered successfully!");
       reset();
+      navigate("/login");
     } catch (error) {
       toast.error("Failed to register user: " + error.message);
     }
