@@ -199,3 +199,28 @@ export const useDeleteTask = () => {
         },
     });
 };
+
+export const useUserScores = () => useQuery({
+    queryKey: ['user_scores'],
+    queryFn: () => fromSupabase(supabase.from('user_scores').select('*')),
+});
+
+export const useAddUserScore = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newUserScore) => fromSupabase(supabase.from('user_scores').insert([newUserScore])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('user_scores');
+        },
+    });
+};
+
+export const useUpdateUserScore = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedUserScore) => fromSupabase(supabase.from('user_scores').update(updatedUserScore).eq('user_id', updatedUserScore.user_id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('user_scores');
+        },
+    });
+};
