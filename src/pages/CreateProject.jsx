@@ -3,12 +3,25 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAddProject } from "@/integrations/supabase/index.js";
+import { toast } from "sonner";
 
 const CreateProject = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+  const addProject = useAddProject();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      await addProject.mutateAsync({
+        project_name: data.title,
+        description: data.description,
+        start_date: new Date().toISOString(),
+      });
+      toast.success("Project created successfully!");
+      reset();
+    } catch (error) {
+      toast.error("Failed to create project: " + error.message);
+    }
   };
 
   return (
