@@ -1,4 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Tasks from "./pages/Tasks.jsx";
 import Index from "./pages/Index.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -20,6 +21,7 @@ function App() {
           <Route exact path="/vote" element={<Vote />} />
           <Route exact path="/create-project" element={<CreateProject />} />
           <Route exact path="/project-details" element={<ProjectDetails />} />
+          <Route exact path="/tasks" element={<Tasks />} />
         </Route>
       </Routes>
     </Router>

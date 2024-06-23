@@ -180,6 +180,26 @@ export const useAddTask = () => {
     });
 };
 
+export const useUpdateTask = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedTask) => fromSupabase(supabase.from('tasks').update(updatedTask).eq('task_id', updatedTask.task_id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('tasks');
+        },
+    });
+};
+
+export const useDeleteTask = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (taskId) => fromSupabase(supabase.from('tasks').delete().eq('task_id', taskId)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('tasks');
+        },
+    });
+};
+
 export const useProfiles = () => useQuery({
     queryKey: ['profiles'],
     queryFn: () => fromSupabase(supabase.from('profiles').select('*')),
