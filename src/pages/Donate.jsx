@@ -3,12 +3,36 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAddUserScore, useUpdateUserScore, useUserScores } from "@/integrations/supabase/index.js";
 
 const Donate = () => {
   const { register, handleSubmit } = useForm();
+  const { data: userScores } = useUserScores();
+  const updateUserScore = useUpdateUserScore();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      // Assuming donation logic here
+
+      const userId = supabase.auth.user().id;
+      const userScore = userScores.find(score => score.user_id === userId);
+
+      if (userScore) {
+        await updateUserScore.mutateAsync({
+          user_id: userId,
+          score: userScore.score + 5, // Increment score by 5 for donating
+        });
+      } else {
+        await addUserScore.mutateAsync({
+          user_id: userId,
+          score: 5,
+        });
+      }
+
+      toast.success("Donation successful!");
+    } catch (error) {
+      toast.error("Failed to donate: " + error.message);
+    }
   };
 
   return (
