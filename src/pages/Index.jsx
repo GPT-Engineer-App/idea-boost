@@ -1,10 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useUserScores } from "@/integrations/supabase/index.js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
+  const { data: userScores, isLoading, error } = useUserScores();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading user scores</div>;
   return (
     <div className="space-y-8">
       <section className="relative h-96 bg-cover bg-center" style={{ backgroundImage: "url('/images/banner.jpg')" }}>
@@ -56,42 +60,17 @@ const Index = () => {
       <section className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-6">Individual Members</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="text-center">
-            <Avatar className="mx-auto">
-              <AvatarImage src="/images/member1.jpg" alt="Vita" />
-              <AvatarFallback>V</AvatarFallback>
-            </Avatar>
-            <h3 className="mt-4 text-xl font-bold">Vita</h3>
-            <p className="text-gray-500">Score: 165300</p>
-            <Button className="mt-2" variant="outline">See Profile</Button>
-          </div>
-          <div className="text-center">
-            <Avatar className="mx-auto">
-              <AvatarImage src="/images/member2.jpg" alt="Anna" />
-              <AvatarFallback>A</AvatarFallback>
-            </Avatar>
-            <h3 className="mt-4 text-xl font-bold">Anna</h3>
-            <p className="text-gray-500">Score: 120932</p>
-            <Button className="mt-2" variant="outline">See Profile</Button>
-          </div>
-          <div className="text-center">
-            <Avatar className="mx-auto">
-              <AvatarImage src="/images/member3.jpg" alt="Saleh" />
-              <AvatarFallback>S</AvatarFallback>
-            </Avatar>
-            <h3 className="mt-4 text-xl font-bold">Saleh</h3>
-            <p className="text-gray-500">Score: 93204</p>
-            <Button className="mt-2" variant="outline">See Profile</Button>
-          </div>
-          <div className="text-center">
-            <Avatar className="mx-auto">
-              <AvatarImage src="/images/member4.jpg" alt="Mona" />
-              <AvatarFallback>M</AvatarFallback>
-            </Avatar>
-            <h3 className="mt-4 text-xl font-bold">Mona</h3>
-            <p className="text-gray-500">Score: 88605</p>
-            <Button className="mt-2" variant="outline">See Profile</Button>
-          </div>
+          {userScores.map(userScore => (
+            <div className="text-center" key={userScore.user_id}>
+              <Avatar className="mx-auto">
+                <AvatarImage src={`/images/member${userScore.user_id}.jpg`} alt={userScore.user_id} />
+                <AvatarFallback>{userScore.user_id.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <h3 className="mt-4 text-xl font-bold">{userScore.user_id}</h3>
+              <p className="text-gray-500">Score: {userScore.score}</p>
+              <Button className="mt-2" variant="outline">See Profile</Button>
+            </div>
+          ))}
         </div>
         <Button className="mt-6" variant="secondary">See More Members</Button>
       </section>

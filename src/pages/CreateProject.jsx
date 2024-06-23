@@ -3,12 +3,15 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddProject } from "@/integrations/supabase/index.js";
+import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
 const CreateProject = () => {
   const { register, handleSubmit, reset } = useForm();
   const addProject = useAddProject();
+  const { data: userScores } = useUserScores();
+  const updateUserScore = useUpdateUserScore();
+  const addUserScore = useAddUserScore();
 
   const onSubmit = async (data) => {
     try {
@@ -17,6 +20,21 @@ const CreateProject = () => {
         description: data.description,
         start_date: new Date().toISOString(),
       });
+      const userId = supabase.auth.user().id;
+      const userScore = userScores.find(score => score.user_id === userId);
+
+      if (userScore) {
+        await updateUserScore.mutateAsync({
+          user_id: userId,
+          score: userScore.score + 10, // Increment score by 10 for creating a project
+        });
+      } else {
+        await addUserScore.mutateAsync({
+          user_id: userId,
+          score: 10,
+        });
+      }
+
       toast.success("Project created successfully!");
       reset();
     } catch (error) {

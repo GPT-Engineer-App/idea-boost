@@ -255,6 +255,16 @@ export const useAddUserScore = () => {
     });
 };
 
+export const useUpdateUserScore = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedUserScore) => fromSupabase(supabase.from('user_scores').update(updatedUserScore).eq('user_id', updatedUserScore.user_id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('user_scores');
+        },
+    });
+};
+
 export const useComments = () => useQuery({
     queryKey: ['comments'],
     queryFn: () => fromSupabase(supabase.from('comments').select('*')),
