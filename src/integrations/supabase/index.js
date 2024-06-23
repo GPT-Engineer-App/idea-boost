@@ -269,3 +269,18 @@ export const useAddFile = () => {
         },
     });
 };
+
+export const useComments = () => useQuery({
+    queryKey: ['comments'],
+    queryFn: () => fromSupabase(supabase.from('comments').select('*')),
+});
+
+export const useAddComment = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newComment) => fromSupabase(supabase.from('comments').insert([newComment])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('comments');
+        },
+    });
+};
