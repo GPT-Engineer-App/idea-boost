@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useAddUserScore, useUpdateUserScore, useUserScores, useVotes, useAddVote, Vote } from "@/integrations/supabase/index.js";
-import { supabase } from "@/integrations/supabase/index.js";
+import { useAddUserScore, useUpdateUserScore, useUserScores, useVotes, useAddVote } from "@/integrations/supabase/index.js";
+import { supabase, Vote } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
 const Vote = () => {
