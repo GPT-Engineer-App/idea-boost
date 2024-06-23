@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSupabaseAuth } from "@/integrations/supabase/auth.jsx";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { toast } from "sonner";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
 
   const { session, loading, login } = useSupabaseAuth();
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  useEffect(() => {
+    if (session) {
+      navigate("/");
+    }
+  }, [session, navigate]);
 
   const onSubmit = async (data) => {
     try {
