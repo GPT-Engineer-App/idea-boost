@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ const Tasks = () => {
   const { register, handleSubmit, reset } = useForm();
   const { data: tags, isLoading: tagsLoading, error: tagsError } = useTags();
   const addTag = useAddTag();
+  const [loading, setLoading] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const onSubmit = async (data) => {
     try {
@@ -44,6 +46,7 @@ const Tasks = () => {
   };
 
   const handleUpdate = async (taskId, data) => {
+    setLoading(true);
     try {
       await updateTask.mutateAsync({
         task_id: taskId,
@@ -52,6 +55,8 @@ const Tasks = () => {
       toast.success("Task updated successfully!");
     } catch (error) {
       toast.error("Failed to update task: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,7 +86,7 @@ const Tasks = () => {
               <p>Status: {task.status}</p>
               <p>Priority: {task.priority}</p>
               <p>Due Date: {new Date(task.due_date).toLocaleDateString()}</p>
-              <Button variant="outline" onClick={() => handleUpdate(task.task_id, { status: "completed" })}>Mark as Completed</Button>
+              <Button variant="outline" onClick={() => setSelectedTask(task)}>Edit</Button>
               <Button variant="outline" onClick={() => handleDelete(task.task_id)}>Delete</Button>
             </CardContent>
           </Card>
@@ -146,6 +151,68 @@ const Tasks = () => {
           <Button type="submit" className="w-full">Add Task</Button>
         </form>
       </div>
+      {selectedTask && (
+        <div className="mt-8">
+          <h3 className="text-2xl font-bold mb-4">Edit Task</h3>
+          <form onSubmit={handleSubmit((data) => handleUpdate(selectedTask.task_id, data))} className="space-y-4">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                Title
+              </label>
+              <Input id="title" type="text" defaultValue={selectedTask.title} {...register("title")} required />
+            </div>
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <Input id="description" type="text" defaultValue={selectedTask.description} {...register("description")} required />
+            </div>
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                Status
+              </label>
+              <Input id="status" type="text" defaultValue={selectedTask.status} {...register("status")} required />
+            </div>
+            <div>
+              <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
+                Priority
+              </label>
+              <Input id="priority" type="text" defaultValue={selectedTask.priority} {...register("priority")} required />
+            </div>
+            <div>
+              <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
+                Due Date
+              </label>
+              <Input id="due_date" type="date" defaultValue={new Date(selectedTask.due_date).toISOString().split('T')[0]} {...register("due_date")} required />
+            </div>
+            <div>
+              <label htmlFor="project_id" className="block text-sm font-medium text-gray-700">
+                Project ID
+              </label>
+              <Input id="project_id" type="text" defaultValue={selectedTask.project_id} {...register("project_id")} required />
+            </div>
+            <div>
+              <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+                Tags
+              </label>
+              <Select {...register("tags")} multiple defaultValue={selectedTask.tags}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select tags" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tags.map(tag => (
+                    <SelectItem key={tag.tag_id} value={tag.name}>
+                      {tag.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="w-full">Update Task</Button>
+          </form>
+        </div>
+      )}
+      {loading && <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"><div className="loader"></div></div>}
     </div>
   );
 };
