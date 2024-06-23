@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase, useAddFile, useTags, useAddTag } from "@/integrations/supabase/index.js";
+import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase, useAddFile, useTags, useAddTag, Project } from "@/integrations/supabase/index.js";
 
 const CreateProject = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -19,7 +19,7 @@ const CreateProject = () => {
 
   const onSubmit = async (data) => {
     try {
-      const project = await addProject.mutateAsync({
+      const project = await Project.create({
         project_name: data.title,
         description: data.description,
         start_date: new Date().toISOString(),

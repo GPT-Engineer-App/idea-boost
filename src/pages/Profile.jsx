@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSupabaseAuth } from "@/integrations/supabase/auth.jsx";
-import { supabase } from "@/integrations/supabase/index.js";
+import { User } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
 const Profile = () => {
@@ -16,15 +16,8 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .single();
-
-      if (error) {
-        toast.error("Failed to fetch profile: " + error.message);
-      } else {
+      try {
+        const data = await User.fetchProfile(session.user.id);
         console.log("Fetched profile data:", data);
         setProfile(data);
         if (data) {
@@ -33,6 +26,8 @@ const Profile = () => {
           setValue("name", session.user.user_metadata.full_name);
           setValue("email", session.user.email);
         }
+      } catch (error) {
+        toast.error("Failed to fetch profile: " + error.message);
       }
       setLoading(false);
     };
@@ -51,12 +46,7 @@ const Profile = () => {
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("profiles").upsert(updates);
-
-      if (error) {
-        throw error;
-      }
-
+      await User.updateProfile(updates);
       toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error("Failed to update profile: " + error.message);

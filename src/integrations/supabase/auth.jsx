@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react';
-import { supabase, SupabaseProvider } from './index.js';
+import { supabase, SupabaseProvider, User } from './index.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
@@ -25,12 +25,33 @@ export const SupabaseAuthProviderInner = ({ children }) => {
     const getSession = async () => {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        session.user.profile = userProfile;
+      }
       setSession(session);
       setLoading(false);
     };
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
+      if (session) {
+        const fetchUserProfile = async () => {
+          const { data: userProfile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          session.user.profile = userProfile;
+          setSession(session);
+        };
+        fetchUserProfile();
+      } else {
+        setSession(null);
+      }
       queryClient.invalidateQueries('user');
     });
 
@@ -46,6 +67,12 @@ export const SupabaseAuthProviderInner = ({ children }) => {
     setLoading(true);
     const { error, session } = await supabase.auth.signIn({ email, password });
     if (error) throw new Error(error.message);
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
+    session.user.profile = userProfile;
     setSession(session);
     queryClient.invalidateQueries('user');
     setLoading(false);

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { useComments, useAddComment, useVotes, useAddVote, supabase, useTags } from "@/integrations/supabase/index.js";
+import { useComments, useAddComment, useVotes, useAddVote, supabase, useTags, Comment } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
@@ -41,7 +41,7 @@ const ProjectDetails = () => {
 
   const onSubmit = async (data) => {
     try {
-      await addComment.mutateAsync({
+      await Comment.create({
         task_id: "project-id-placeholder", // Replace with actual project ID
         user_id: userId,
         content: data.comment,

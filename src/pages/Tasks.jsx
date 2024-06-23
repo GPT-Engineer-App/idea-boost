@@ -3,15 +3,12 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTasks, useAddTask, useUpdateTask, useDeleteTask, useTags, useAddTag } from "@/integrations/supabase/index.js";
+import { useTasks, useTags, useAddTag, Task } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const Tasks = () => {
   const { data: tasks, isLoading, error } = useTasks();
-  const addTask = useAddTask();
-  const updateTask = useUpdateTask();
-  const deleteTask = useDeleteTask();
   const { register, handleSubmit, reset } = useForm();
   const { data: tags, isLoading: tagsLoading, error: tagsError } = useTags();
   const addTag = useAddTag();
@@ -22,7 +19,7 @@ const Tasks = () => {
 
   const onSubmit = async (data) => {
     try {
-      const task = await addTask.mutateAsync({
+      const task = await Task.create({
         title: data.title,
         description: data.description,
         status: data.status,
@@ -50,8 +47,7 @@ const Tasks = () => {
   const handleUpdate = async (taskId, data) => {
     setLoading(true);
     try {
-      await updateTask.mutateAsync({
-        task_id: taskId,
+      await Task.update(taskId, {
         ...data,
       });
       toast.success("Task updated successfully!");
@@ -64,7 +60,7 @@ const Tasks = () => {
 
   const handleDelete = async (taskId) => {
     try {
-      await deleteTask.mutateAsync({ task_id: taskId });
+      await Task.delete(taskId);
       toast.success("Task deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete task: " + error.message);

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useAddUserScore, useUpdateUserScore, useUserScores, useVotes, useAddVote } from "@/integrations/supabase/index.js";
+import { useAddUserScore, useUpdateUserScore, useUserScores, useVotes, useAddVote, Vote } from "@/integrations/supabase/index.js";
 import { supabase } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
@@ -17,7 +17,7 @@ const Vote = () => {
       const userId = supabase.auth.user().id;
       const userScore = userScores.find(score => score.user_id === userId);
 
-      await addVote.mutateAsync({
+      await Vote.create({
         project_id: "project-id-placeholder", // Replace with actual project ID
         user_id: userId,
         created_at: new Date().toISOString(),

@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Sequelize, DataTypes } from 'sequelize';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_PROJECT_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
@@ -17,138 +18,79 @@ const fromSupabase = async (query) => {
     return data;
 };
 
-/* supabase integration types
+// Initialize Sequelize
+const sequelize = new Sequelize(import.meta.env.VITE_DATABASE_URL, {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    logging: false,
+});
 
-### groups
+// Define models
+const User = sequelize.define('User', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    user_id: { type: DataTypes.UUID, allowNull: false },
+    username: { type: DataTypes.STRING, allowNull: false },
+    group_id: { type: DataTypes.UUID, allowNull: true },
+    created_at: { type: DataTypes.DATE, allowNull: true },
+    updated_at: { type: DataTypes.DATE, allowNull: true },
+    email: { type: DataTypes.STRING, allowNull: false },
+    password_hash: { type: DataTypes.STRING, allowNull: false },
+    first_name: { type: DataTypes.STRING, allowNull: true },
+    last_name: { type: DataTypes.STRING, allowNull: true },
+});
 
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| id         | int8        | number | true     |
-| group_id   | uuid        | string | false    |
-| group_name | varchar     | string | true     |
-| description| text        | string | false    |
-| created_at | timestamptz | string | false    |
-| updated_at | timestamptz | string | false    |
+const Task = sequelize.define('Task', {
+    task_id: { type: DataTypes.UUID, primaryKey: true },
+    user_id: { type: DataTypes.UUID, allowNull: false },
+    title: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.TEXT, allowNull: true },
+    category_id: { type: DataTypes.UUID, allowNull: true },
+    priority: { type: DataTypes.STRING, allowNull: true },
+    status: { type: DataTypes.STRING, allowNull: true },
+    due_date: { type: DataTypes.DATE, allowNull: true },
+    created_at: { type: DataTypes.DATE, allowNull: true },
+    updated_at: { type: DataTypes.DATE, allowNull: true },
+});
 
-### tasks
+const File = sequelize.define('File', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    file_id: { type: DataTypes.UUID, allowNull: true },
+    uploader_id: { type: DataTypes.UUID, allowNull: false },
+    file_name: { type: DataTypes.TEXT, allowNull: false },
+    file_type: { type: DataTypes.TEXT, allowNull: true },
+    file_size: { type: DataTypes.INTEGER, allowNull: true },
+    upload_date: { type: DataTypes.DATE, allowNull: true },
+    version: { type: DataTypes.INTEGER, allowNull: true },
+    is_active: { type: DataTypes.BOOLEAN, allowNull: true },
+    group_id: { type: DataTypes.UUID, allowNull: true },
+});
 
-| name        | type        | format | required |
-|-------------|-------------|--------|----------|
-| task_id     | uuid        | string | true     |
-| user_id     | uuid        | string | true     |
-| title       | varchar     | string | true     |
-| description | text        | string | false    |
-| category_id | uuid        | string | false    |
-| priority    | varchar     | string | false    |
-| status      | varchar     | string | false    |
-| due_date    | timestamp   | string | false    |
-| created_at  | timestamp   | string | false    |
-| updated_at  | timestamp   | string | false    |
+const ContextualRelation = sequelize.define('ContextualRelation', {
+    // Define fields as per your requirements
+});
 
-### profiles
+const EntanglementNode = sequelize.define('EntanglementNode', {
+    // Define fields as per your requirements
+});
 
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| profile_id | uuid        | string | true     |
-| user_id    | uuid        | string | true     |
-| bio        | text        | string | false    |
-| avatar_url | varchar     | string | false    |
-| created_at | timestamp   | string | false    |
-| updated_at | timestamp   | string | false    |
+const Comment = sequelize.define('Comment', {
+    comment_id: { type: DataTypes.UUID, primaryKey: true },
+    task_id: { type: DataTypes.UUID, allowNull: false },
+    user_id: { type: DataTypes.UUID, allowNull: false },
+    content: { type: DataTypes.TEXT, allowNull: false },
+    created_at: { type: DataTypes.DATE, allowNull: true },
+});
 
-### task_tags
+const Group = sequelize.define('Group', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    group_id: { type: DataTypes.UUID, allowNull: true },
+    group_name: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.TEXT, allowNull: true },
+    created_at: { type: DataTypes.DATE, allowNull: true },
+    updated_at: { type: DataTypes.DATE, allowNull: true },
+});
 
-| name   | type | format | required |
-|--------|------|--------|----------|
-| task_id| uuid | string | true     |
-| tag_id | uuid | string | true     |
-
-### projects
-
-| name        | type        | format | required |
-|-------------|-------------|--------|----------|
-| id          | int8        | number | true     |
-| project_id  | uuid        | string | false    |
-| project_name| varchar     | string | true     |
-| description | text        | string | false    |
-| start_date  | timestamptz | string | false    |
-| end_date    | timestamptz | string | false    |
-
-### files
-
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| id         | int8        | number | true     |
-| file_id    | uuid        | string | false    |
-| uploader_id| uuid        | string | true     |
-| file_name  | text        | string | true     |
-| file_type  | text        | string | false    |
-| file_size  | int8        | number | false    |
-| upload_date| timestamptz | string | false    |
-| version    | int4        | number | false    |
-| is_active  | bool        | boolean| false    |
-| group_id   | uuid        | string | false    |
-
-### user_scores
-
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| id         | int8        | number | true     |
-| user_id    | uuid        | string | true     |
-| score      | int4        | number | true     |
-| created_at | timestamptz | string | false    |
-| updated_at | timestamptz | string | false    |
-
-### comments
-
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| comment_id | uuid        | string | true     |
-| task_id    | uuid        | string | true     |
-| user_id    | uuid        | string | true     |
-| content    | text        | string | true     |
-| created_at | timestamp   | string | false    |
-
-### tags
-
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| tag_id     | uuid        | string | true     |
-| name       | varchar     | string | true     |
-
-### users
-
-| name          | type        | format | required |
-|---------------|-------------|--------|----------|
-| id            | int8        | number | true     |
-| user_id       | uuid        | string | false    |
-| username      | varchar     | string | true     |
-| group_id      | uuid        | string | false    |
-| created_at    | timestamptz | string | false    |
-| updated_at    | timestamptz | string | false    |
-| email         | varchar     | string | true     |
-| password_hash | varchar     | string | true     |
-| first_name    | varchar     | string | false    |
-| last_name     | varchar     | string | false    |
-
-### sessions
-
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| session_id | uuid        | string | true     |
-| user_id    | uuid        | string | true     |
-| token      | varchar     | string | true     |
-| created_at | timestamp   | string | false    |
-| expires_at | timestamp   | string | false    |
-
-### categories
-
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| category_id| uuid        | string | true     |
-| name       | varchar     | string | true     |
-
-*/
+export { User, Task, File, ContextualRelation, EntanglementNode, Comment, Group };
 
 export const useTags = () => useQuery({
     queryKey: ['tags'],

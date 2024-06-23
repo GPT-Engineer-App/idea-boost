@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddUser } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/index.js"; // Add this import
+import { supabase, User } from "@/integrations/supabase/index.js"; // Add this import
 
 const Register = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -24,11 +24,15 @@ const Register = () => {
         throw error;
       }
 
-      await addUser.mutateAsync({
-        username: data.username,
-        email: data.email,
-        created_at: new Date().toISOString(),
-      });
+      const { data: user, error: userError } = await supabase
+        .from('profiles')
+        .insert([
+          { id: supabase.auth.user().id, username: data.username, email: data.email, created_at: new Date().toISOString() },
+        ]);
+
+      if (userError) {
+        throw userError;
+      }
 
       toast.success("User registered successfully!");
       reset();
