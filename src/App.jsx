@@ -1,5 +1,10 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Index from "./pages/Index.jsx";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Donate from "./pages/Donate.jsx";
+import Vote from "./pages/Vote.jsx";
+import CreateProject from "./pages/CreateProject.jsx";
 import SharedLayout from "./components/SharedLayout.jsx";
 
 function App() {
@@ -8,6 +13,11 @@ function App() {
       <Routes>
         <Route element={<SharedLayout />}>
           <Route exact path="/" element={<Index />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
+          <Route exact path="/donate" element={<Donate />} />
+          <Route exact path="/vote" element={<Vote />} />
+          <Route exact path="/create-project" element={<CreateProject />} />
         </Route>
       </Routes>
     </Router>
