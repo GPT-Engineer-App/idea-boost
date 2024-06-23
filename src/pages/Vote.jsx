@@ -2,12 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAddUserScore, useUpdateUserScore, useUserScores, useVotes, useAddVote } from "@/integrations/supabase/index.js";
-import { supabase, Vote } from "@/integrations/supabase/index.js";
+import { supabase } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
 const Vote = () => {
   const { data: votes, isLoading, error } = useVotes();
   const addVote = useAddVote();
+  const Vote = useAddVote(); // Ensure Vote model is imported only once
   const { data: userScores } = useUserScores();
   const updateUserScore = useUpdateUserScore();
   const addUserScore = useAddUserScore();
