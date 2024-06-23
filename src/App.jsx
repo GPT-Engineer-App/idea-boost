@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import ProtectedRoute
+import Profile from "./pages/Profile.jsx";
 import Tasks from "./pages/Tasks.jsx";
 import Index from "./pages/Index.jsx";
 import Login from "./pages/Login.jsx";
@@ -23,6 +24,7 @@ function App() {
           <Route exact path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
           <Route exact path="/project-details" element={<ProtectedRoute><ProjectDetails /></ProtectedRoute>} />
           <Route exact path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+          <Route exact path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Route>
       </Routes>
     </Router>
