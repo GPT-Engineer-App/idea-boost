@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddUser } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/index.js"; // Add this import
 
 const Register = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -14,12 +15,21 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
+      const { error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       await addUser.mutateAsync({
         username: data.username,
         email: data.email,
-        password_hash: data.password, // In a real-world scenario, ensure to hash the password before storing it
         created_at: new Date().toISOString(),
       });
+
       toast.success("User registered successfully!");
       reset();
       navigate("/login");
