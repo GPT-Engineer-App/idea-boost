@@ -6,6 +6,7 @@ import Donate from "./pages/Donate.jsx";
 import Vote from "./pages/Vote.jsx";
 import CreateProject from "./pages/CreateProject.jsx";
 import SharedLayout from "./components/SharedLayout.jsx";
+import ProjectDetail from "./pages/ProjectDetail.jsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/donate" element={<Donate />} />
           <Route exact path="/vote" element={<Vote />} />
           <Route exact path="/create-project" element={<CreateProject />} />
+          <Route exact path="/project-detail" element={<ProjectDetail />} />
         </Route>
       </Routes>
     </Router>

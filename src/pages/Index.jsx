@@ -1,10 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-8">
       <section className="relative h-96 bg-cover bg-center" style={{ backgroundImage: "url('/images/banner.jpg')" }}>
@@ -26,7 +28,7 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <img src="/images/project2.jpg" alt="Community Plastic Recycling Workshop" className="w-full h-48 object-cover rounded-md" />
-              <Button className="mt-4" variant="outline">Read More</Button>
+              <Button className="mt-4" variant="outline" onClick={() => navigate('/project-detail')}>Read More</Button>
             </CardContent>
           </Card>
           <Card>
@@ -36,7 +38,7 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <img src="/images/project3.jpg" alt="Solar-Powered Water Purification System" className="w-full h-48 object-cover rounded-md" />
-              <Button className="mt-4" variant="outline">Read More</Button>
+              <Button className="mt-4" variant="outline" onClick={() => navigate('/project-detail')}>Read More</Button>
             </CardContent>
           </Card>
         </div>
