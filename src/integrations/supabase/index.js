@@ -234,3 +234,18 @@ export const useAddUser = () => {
         },
     });
 };
+
+export const useVotes = () => useQuery({
+    queryKey: ['votes'],
+    queryFn: () => fromSupabase(supabase.from('votes').select('*')),
+});
+
+export const useAddVote = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newVote) => fromSupabase(supabase.from('votes').insert([newVote])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('votes');
+        },
+    });
+};
