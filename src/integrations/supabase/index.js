@@ -224,3 +224,13 @@ export const useUpdateUserScore = () => {
         },
     });
 };
+
+export const useAddUser = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newUser) => fromSupabase(supabase.from('users').insert([newUser])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('users');
+        },
+    });
+};
