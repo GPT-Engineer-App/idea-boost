@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import ProtectedRoute
+
 import Profile from "./pages/Profile.jsx";
 import Tasks from "./pages/Tasks.jsx";
 import Index from "./pages/Index.jsx";
@@ -19,12 +19,12 @@ function App() {
           <Route exact path="/" element={<Index />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
-          <Route exact path="/donate" element={<ProtectedRoute><Donate /></ProtectedRoute>} />
-          <Route exact path="/vote" element={<ProtectedRoute><Vote /></ProtectedRoute>} />
-          <Route exact path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
-          <Route exact path="/project-details" element={<ProtectedRoute><ProjectDetails /></ProtectedRoute>} />
-          <Route exact path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
-          <Route exact path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route exact path="/donate" element={<Donate />} />
+          <Route exact path="/vote" element={<Vote />} />
+          <Route exact path="/create-project" element={<CreateProject />} />
+          <Route exact path="/project-details" element={<ProjectDetails />} />
+          <Route exact path="/tasks" element={<Tasks />} />
+          <Route exact path="/profile" element={<Profile />} />
         </Route>
       </Routes>
     </Router>
