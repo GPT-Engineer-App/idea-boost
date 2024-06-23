@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores } from "@/integrations/supabase/index.js";
+import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
 const CreateProject = () => {
@@ -11,6 +11,7 @@ const CreateProject = () => {
   const addProject = useAddProject();
   const { data: userScores } = useUserScores();
   const updateUserScore = useUpdateUserScore();
+  const addUserScore = useAddUserScore();
 
   const onSubmit = async (data) => {
     try {

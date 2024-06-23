@@ -2,10 +2,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAddUserScore, useUpdateUserScore, useUserScores } from "@/integrations/supabase/index.js";
+import { supabase } from "@/integrations/supabase/index.js"; // Add this import
+import { toast } from "sonner"; // Add this import
 
 const Vote = () => {
   const { data: userScores } = useUserScores();
   const updateUserScore = useUpdateUserScore();
+
+  const addUserScore = useAddUserScore(); // Add this line
 
   const handleVote = async () => {
     try {

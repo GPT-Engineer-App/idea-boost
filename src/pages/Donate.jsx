@@ -4,11 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddUserScore, useUpdateUserScore, useUserScores } from "@/integrations/supabase/index.js";
+import { supabase } from "@/integrations/supabase/index.js"; // Add this import
+import { toast } from "sonner"; // Add this import
 
 const Donate = () => {
   const { register, handleSubmit } = useForm();
   const { data: userScores } = useUserScores();
   const updateUserScore = useUpdateUserScore();
+
+  const addUserScore = useAddUserScore(); // Add this line
 
   const onSubmit = async (data) => {
     try {
