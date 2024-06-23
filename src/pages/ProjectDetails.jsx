@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { useComments, useAddComment, supabase } from "@/integrations/supabase/index.js";
+import { useComments, useAddComment, useVotes, useAddVote, supabase } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
 
 const ProjectDetails = () => {
   const { data: comments, isLoading, error } = useComments();
+  const { data: votes, isLoading: votesLoading, error: votesError } = useVotes();
+  const addVote = useAddVote();
   const addComment = useAddComment();
   const { register, handleSubmit, reset } = useForm();
   const [userId, setUserId] = useState(null);
@@ -21,6 +23,19 @@ const ProjectDetails = () => {
     };
     fetchUser();
   }, []);
+
+  const handleVote = async () => {
+    try {
+      await addVote.mutateAsync({
+        project_id: "project-id-placeholder", // Replace with actual project ID
+        user_id: userId,
+        created_at: new Date().toISOString(),
+      });
+      toast.success("Vote recorded successfully!");
+    } catch (error) {
+      toast.error("Failed to record vote: " + error.message);
+    }
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -37,8 +52,10 @@ const ProjectDetails = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading comments</div>;
+  if (isLoading || votesLoading) return <div>Loading...</div>;
+  if (error || votesError) return <div>Error loading data</div>;
+
+  const voteCount = votes.filter(vote => vote.project_id === "project-id-placeholder").length; // Replace with actual project ID
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -61,7 +78,8 @@ const ProjectDetails = () => {
                 <li>CO2 Absorption</li>
               </ul>
             </div>
-            <Button className="mt-4" variant="outline">Vote Here</Button>
+            <Button className="mt-4" variant="outline" onClick={handleVote}>Vote Here</Button>
+            <p className="mt-2">Votes: {voteCount}</p>
           </CardContent>
         </Card>
       </div>

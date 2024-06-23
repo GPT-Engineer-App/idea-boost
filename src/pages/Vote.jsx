@@ -1,22 +1,27 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useAddUserScore, useUpdateUserScore, useUserScores } from "@/integrations/supabase/index.js";
-import { supabase } from "@/integrations/supabase/index.js"; // Add this import
-import { toast } from "sonner"; // Add this import
+import { useAddUserScore, useUpdateUserScore, useUserScores, useVotes, useAddVote } from "@/integrations/supabase/index.js";
+import { supabase } from "@/integrations/supabase/index.js";
+import { toast } from "sonner";
 
 const Vote = () => {
+  const { data: votes, isLoading, error } = useVotes();
+  const addVote = useAddVote();
   const { data: userScores } = useUserScores();
   const updateUserScore = useUpdateUserScore();
-
-  const addUserScore = useAddUserScore(); // Add this line
+  const addUserScore = useAddUserScore();
 
   const handleVote = async () => {
     try {
-      // Assuming voting logic here
-
       const userId = supabase.auth.user().id;
       const userScore = userScores.find(score => score.user_id === userId);
+
+      await addVote.mutateAsync({
+        project_id: "project-id-placeholder", // Replace with actual project ID
+        user_id: userId,
+        created_at: new Date().toISOString(),
+      });
 
       if (userScore) {
         await updateUserScore.mutateAsync({
@@ -35,6 +40,12 @@ const Vote = () => {
       toast.error("Failed to vote: " + error.message);
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading votes</div>;
+
+  const voteCount = votes.filter(vote => vote.project_id === "project-id-placeholder").length; // Replace with actual project ID
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold mb-6">Vote</h2>
@@ -47,6 +58,7 @@ const Vote = () => {
           <CardContent>
             <img src="/images/vote.jpg" alt="Vote" className="w-full h-48 object-cover rounded-md" />
             <Button className="mt-4" variant="outline" onClick={handleVote}>Vote Here</Button>
+            <p className="mt-2">Votes: {voteCount}</p>
           </CardContent>
         </Card>
       </div>
