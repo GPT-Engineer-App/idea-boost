@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTasks, useAddTask, useUpdateTask, useDeleteTask } from "@/integrations/supabase/index.js";
+import { useTasks, useAddTask, useUpdateTask, useDeleteTask, useTags, useAddTag } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const Tasks = () => {
   const { data: tasks, isLoading, error } = useTasks();
@@ -12,10 +13,12 @@ const Tasks = () => {
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
   const { register, handleSubmit, reset } = useForm();
+  const { data: tags, isLoading: tagsLoading, error: tagsError } = useTags();
+  const addTag = useAddTag();
 
   const onSubmit = async (data) => {
     try {
-      await addTask.mutateAsync({
+      const task = await addTask.mutateAsync({
         title: data.title,
         description: data.description,
         status: data.status,
@@ -23,6 +26,16 @@ const Tasks = () => {
         due_date: data.due_date,
         project_id: data.project_id,
       });
+
+      if (data.tags) {
+        for (const tag of data.tags) {
+          await addTag.mutateAsync({
+            tag_id: task[0].task_id,
+            name: tag,
+          });
+        }
+      }
+
       toast.success("Task created successfully!");
       reset();
     } catch (error) {
@@ -51,8 +64,8 @@ const Tasks = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading tasks</div>;
+  if (isLoading || tagsLoading) return <div>Loading...</div>;
+  if (error || tagsError) return <div>Error loading tasks or tags</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -112,6 +125,23 @@ const Tasks = () => {
               Project ID
             </label>
             <Input id="project_id" type="text" {...register("project_id")} required />
+          </div>
+          <div>
+            <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+              Tags
+            </label>
+            <Select {...register("tags")} multiple>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select tags" />
+              </SelectTrigger>
+              <SelectContent>
+                {tags.map(tag => (
+                  <SelectItem key={tag.tag_id} value={tag.name}>
+                    {tag.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <Button type="submit" className="w-full">Add Task</Button>
         </form>

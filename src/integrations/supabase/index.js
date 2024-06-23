@@ -150,17 +150,17 @@ const fromSupabase = async (query) => {
 
 */
 
-export const useGroups = () => useQuery({
-    queryKey: ['groups'],
-    queryFn: () => fromSupabase(supabase.from('groups').select('*')),
+export const useTags = () => useQuery({
+    queryKey: ['tags'],
+    queryFn: () => fromSupabase(supabase.from('tags').select('*')),
 });
 
-export const useAddGroup = () => {
+export const useAddTag = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newGroup) => fromSupabase(supabase.from('groups').insert([newGroup])),
+        mutationFn: (newTag) => fromSupabase(supabase.from('tags').insert([newTag])),
         onSuccess: () => {
-            queryClient.invalidateQueries('groups');
+            queryClient.invalidateQueries('tags');
         },
     });
 };
@@ -200,66 +200,6 @@ export const useDeleteTask = () => {
     });
 };
 
-export const useProfiles = () => useQuery({
-    queryKey: ['profiles'],
-    queryFn: () => fromSupabase(supabase.from('profiles').select('*')),
-});
-
-export const useAddProfile = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newProfile) => fromSupabase(supabase.from('profiles').insert([newProfile])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('profiles');
-        },
-    });
-};
-
-export const useTaskTags = () => useQuery({
-    queryKey: ['task_tags'],
-    queryFn: () => fromSupabase(supabase.from('task_tags').select('*')),
-});
-
-export const useAddTaskTag = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newTaskTag) => fromSupabase(supabase.from('task_tags').insert([newTaskTag])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('task_tags');
-        },
-    });
-};
-
-export const useProjects = () => useQuery({
-    queryKey: ['projects'],
-    queryFn: () => fromSupabase(supabase.from('projects').select('*')),
-});
-
-export const useAddProject = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newProject) => fromSupabase(supabase.from('projects').insert([newProject])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('projects');
-        },
-    });
-};
-
-export const useFiles = () => useQuery({
-    queryKey: ['files'],
-    queryFn: () => fromSupabase(supabase.from('files').select('*')),
-});
-
-export const useAddFile = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newFile) => fromSupabase(supabase.from('files').insert([newFile])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('files');
-        },
-    });
-};
-
 export const useUserScores = () => useQuery({
     queryKey: ['user_scores'],
     queryFn: () => fromSupabase(supabase.from('user_scores').select('*')),
@@ -285,77 +225,12 @@ export const useUpdateUserScore = () => {
     });
 };
 
-export const useComments = () => useQuery({
-    queryKey: ['comments'],
-    queryFn: () => fromSupabase(supabase.from('comments').select('*')),
-});
-
-export const useAddComment = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newComment) => fromSupabase(supabase.from('comments').insert([newComment])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('comments');
-        },
-    });
-};
-
-export const useTags = () => useQuery({
-    queryKey: ['tags'],
-    queryFn: () => fromSupabase(supabase.from('tags').select('*')),
-});
-
-export const useAddTag = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newTag) => fromSupabase(supabase.from('tags').insert([newTag])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('tags');
-        },
-    });
-};
-
-export const useUsers = () => useQuery({
-    queryKey: ['users'],
-    queryFn: () => fromSupabase(supabase.from('users').select('*')),
-});
-
 export const useAddUser = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (newUser) => fromSupabase(supabase.from('users').insert([newUser])),
         onSuccess: () => {
             queryClient.invalidateQueries('users');
-        },
-    });
-};
-
-export const useSessions = () => useQuery({
-    queryKey: ['sessions'],
-    queryFn: () => fromSupabase(supabase.from('sessions').select('*')),
-});
-
-export const useAddSession = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newSession) => fromSupabase(supabase.from('sessions').insert([newSession])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('sessions');
-        },
-    });
-};
-
-export const useCategories = () => useQuery({
-    queryKey: ['categories'],
-    queryFn: () => fromSupabase(supabase.from('categories').select('*')),
-});
-
-export const useAddCategory = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newCategory) => fromSupabase(supabase.from('categories').insert([newCategory])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('categories');
         },
     });
 };
@@ -371,6 +246,41 @@ export const useAddVote = () => {
         mutationFn: (newVote) => fromSupabase(supabase.from('votes').insert([newVote])),
         onSuccess: () => {
             queryClient.invalidateQueries('votes');
+        },
+    });
+};
+
+export const useAddProject = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newProject) => fromSupabase(supabase.from('projects').insert([newProject])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('projects');
+        },
+    });
+};
+
+export const useAddFile = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newFile) => fromSupabase(supabase.from('files').insert([newFile])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('files');
+        },
+    });
+};
+
+export const useComments = () => useQuery({
+    queryKey: ['comments'],
+    queryFn: () => fromSupabase(supabase.from('comments').select('*')),
+});
+
+export const useAddComment = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newComment) => fromSupabase(supabase.from('comments').insert([newComment])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('comments');
         },
     });
 };

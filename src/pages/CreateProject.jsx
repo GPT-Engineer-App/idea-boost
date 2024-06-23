@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase, useAddFile } from "@/integrations/supabase/index.js";
+import { useAddProject, useAddUserScore, useUpdateUserScore, useUserScores, supabase, useAddFile, useTags, useAddTag } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const CreateProject = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -13,6 +14,8 @@ const CreateProject = () => {
   const updateUserScore = useUpdateUserScore();
   const addUserScore = useAddUserScore();
   const addFile = useAddFile();
+  const { data: tags, isLoading: tagsLoading, error: tagsError } = useTags();
+  const addTag = useAddTag();
 
   const onSubmit = async (data) => {
     try {
@@ -57,12 +60,24 @@ const CreateProject = () => {
         });
       }
 
+      if (data.tags) {
+        for (const tag of data.tags) {
+          await addTag.mutateAsync({
+            tag_id: project[0].project_id,
+            name: tag,
+          });
+        }
+      }
+
       toast.success("Project created successfully!");
       reset();
     } catch (error) {
       toast.error("Failed to create project: " + error.message);
     }
   };
+
+  if (tagsLoading) return <div>Loading...</div>;
+  if (tagsError) return <div>Error loading tags</div>;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -89,6 +104,23 @@ const CreateProject = () => {
                 Upload File
               </label>
               <Input id="file" type="file" {...register("file")} />
+            </div>
+            <div>
+              <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+                Tags
+              </label>
+              <Select {...register("tags")} multiple>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select tags" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tags.map(tag => (
+                    <SelectItem key={tag.tag_id} value={tag.name}>
+                      {tag.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <Button type="submit" className="w-full">Create Project</Button>
           </form>
