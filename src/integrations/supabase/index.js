@@ -259,3 +259,13 @@ export const useAddProject = () => {
         },
     });
 };
+
+export const useAddFile = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newFile) => fromSupabase(supabase.from('files').insert([newFile])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('files');
+        },
+    });
+};
