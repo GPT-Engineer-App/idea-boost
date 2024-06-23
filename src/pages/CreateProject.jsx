@@ -24,6 +24,11 @@ const CreateProject = () => {
         description: data.description,
         start_date: new Date().toISOString(),
       });
+      console.log("Project data:", project);
+
+      if (!project) {
+        throw new Error("Project data is null");
+      }
 
       const userId = supabase.auth.user().id;
       const userScore = userScores.find(score => score.user_id === userId);
@@ -62,16 +67,22 @@ const CreateProject = () => {
 
       if (data.tags) {
         for (const tag of data.tags) {
-          await addTag.mutateAsync({
-            tag_id: project[0].project_id,
-            name: tag,
-          });
+          try {
+            await addTag.mutateAsync({
+              tag_id: project[0].project_id,
+              name: tag,
+            });
+          } catch (error) {
+            console.error("Error adding tag:", error);
+            toast.error("Error adding tag: " + error.message);
+          }
         }
       }
 
       toast.success("Project created successfully!");
       reset();
     } catch (error) {
+      console.error("Error creating project:", error);
       toast.error("Error creating project: " + error.message);
     }
   };

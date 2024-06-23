@@ -18,6 +18,8 @@ const Tasks = () => {
   const [loading, setLoading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
+  console.log("Fetched tasks:", tasks); // Console log to check if the task data is being fetched correctly
+
   const onSubmit = async (data) => {
     try {
       const task = await addTask.mutateAsync({
@@ -38,10 +40,10 @@ const Tasks = () => {
         }
       }
 
-      toast.success("Task created successfully!");
+      toast.success("Task created successfully!"); // Success message after the task is created
       reset();
     } catch (error) {
-      toast.error("Failed to create task: " + error.message);
+      toast.error("Failed to create task: " + error.message); // Error handling for the form submission
     }
   };
 
@@ -159,43 +161,43 @@ const Tasks = () => {
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                 Title
               </label>
-              <Input id="title" type="text" defaultValue={selectedTask.title} {...register("title")} required />
+              <Input id="title" type="text" defaultValue={selectedTask?.title} {...register("title")} required />
             </div>
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                 Description
               </label>
-              <Input id="description" type="text" defaultValue={selectedTask.description} {...register("description")} required />
+              <Input id="description" type="text" defaultValue={selectedTask?.description} {...register("description")} required />
             </div>
             <div>
               <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                 Status
               </label>
-              <Input id="status" type="text" defaultValue={selectedTask.status} {...register("status")} required />
+              <Input id="status" type="text" defaultValue={selectedTask?.status} {...register("status")} required />
             </div>
             <div>
               <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
                 Priority
               </label>
-              <Input id="priority" type="text" defaultValue={selectedTask.priority} {...register("priority")} required />
+              <Input id="priority" type="text" defaultValue={selectedTask?.priority} {...register("priority")} required />
             </div>
             <div>
               <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
                 Due Date
               </label>
-              <Input id="due_date" type="date" defaultValue={new Date(selectedTask.due_date).toISOString().split('T')[0]} {...register("due_date")} required />
+              <Input id="due_date" type="date" defaultValue={selectedTask ? new Date(selectedTask.due_date).toISOString().split('T')[0] : ''} {...register("due_date")} required />
             </div>
             <div>
               <label htmlFor="project_id" className="block text-sm font-medium text-gray-700">
                 Project ID
               </label>
-              <Input id="project_id" type="text" defaultValue={selectedTask.project_id} {...register("project_id")} required />
+              <Input id="project_id" type="text" defaultValue={selectedTask?.project_id} {...register("project_id")} required />
             </div>
             <div>
               <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
                 Tags
               </label>
-              <Select {...register("tags")} multiple defaultValue={selectedTask.tags}>
+              <Select {...register("tags")} multiple defaultValue={selectedTask?.tags}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select tags" />
                 </SelectTrigger>

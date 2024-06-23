@@ -57,6 +57,8 @@ const ProjectDetails = () => {
   if (isLoading || votesLoading || tagsLoading) return <div>Loading...</div>;
   if (error || votesError || tagsError) return <div>Error loading data</div>;
 
+  console.log("Project details data fetched successfully:", { comments, votes, tags });
+
   const voteCount = votes.filter(vote => vote.project_id === "project-id-placeholder").length; // Replace with actual project ID
 
   return (
@@ -110,18 +112,20 @@ const ProjectDetails = () => {
             <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
               Tags
             </label>
-            <Select {...register("tags")} multiple>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select tags" />
-              </SelectTrigger>
-              <SelectContent>
-                {tags.map(tag => (
-                  <SelectItem key={tag.tag_id} value={tag.name}>
-                    {tag.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {tags && (
+              <Select {...register("tags")} multiple>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select tags" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tags.map(tag => (
+                    <SelectItem key={tag.tag_id} value={tag.name}>
+                      {tag.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <Button type="submit" className="w-full">Submit Comment</Button>
         </form>
