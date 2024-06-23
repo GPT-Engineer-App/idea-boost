@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { useComments, useAddComment, useVotes, useAddVote, supabase } from "@/integrations/supabase/index.js";
+import { useComments, useAddComment, useVotes, useAddVote, supabase, useTags } from "@/integrations/supabase/index.js";
 import { toast } from "sonner";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const ProjectDetails = () => {
   const { data: comments, isLoading, error } = useComments();
@@ -13,6 +14,7 @@ const ProjectDetails = () => {
   const addComment = useAddComment();
   const { register, handleSubmit, reset } = useForm();
   const [userId, setUserId] = useState(null);
+  const { data: tags, isLoading: tagsLoading, error: tagsError } = useTags();
 
   React.useEffect(() => {
     const fetchUser = async () => {
@@ -52,8 +54,8 @@ const ProjectDetails = () => {
     }
   };
 
-  if (isLoading || votesLoading) return <div>Loading...</div>;
-  if (error || votesError) return <div>Error loading data</div>;
+  if (isLoading || votesLoading || tagsLoading) return <div>Loading...</div>;
+  if (error || votesError || tagsError) return <div>Error loading data</div>;
 
   const voteCount = votes.filter(vote => vote.project_id === "project-id-placeholder").length; // Replace with actual project ID
 
@@ -103,6 +105,23 @@ const ProjectDetails = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Textarea id="comment" {...register("comment")} required />
+          </div>
+          <div>
+            <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+              Tags
+            </label>
+            <Select {...register("tags")} multiple>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select tags" />
+              </SelectTrigger>
+              <SelectContent>
+                {tags.map(tag => (
+                  <SelectItem key={tag.tag_id} value={tag.name}>
+                    {tag.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <Button type="submit" className="w-full">Submit Comment</Button>
         </form>
