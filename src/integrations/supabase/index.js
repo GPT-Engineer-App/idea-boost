@@ -249,3 +249,13 @@ export const useAddVote = () => {
         },
     });
 };
+
+export const useAddProject = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newProject) => fromSupabase(supabase.from('projects').insert([newProject])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('projects');
+        },
+    });
+};
