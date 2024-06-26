@@ -25,14 +25,11 @@ const Profile = () => {
       if (error) {
         toast.error("Failed to fetch profile: " + error.message);
       } else {
-        console.log("Fetched profile data:", data);
         setProfile(data);
-        if (data) {
-          setValue("bio", data.bio);
-          setValue("avatar_url", data.avatar_url);
-          setValue("name", session.user.user_metadata.full_name);
-          setValue("email", session.user.email);
-        }
+        setValue("bio", data.bio);
+        setValue("avatar_url", data.avatar_url);
+        setValue("name", session.user.user_metadata.full_name);
+        setValue("email", session.user.email);
       }
       setLoading(false);
     };
